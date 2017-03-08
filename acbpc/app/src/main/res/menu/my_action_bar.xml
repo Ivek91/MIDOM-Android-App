@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/my_switch_item"
+        app:showAsAction="always"
+        app:actionLayout="@layout/my_spinner"
+        android:title="Available" />
+
+    <!--<item-->
+        <!--android:id="@+id/test"-->
+        <!--app:showAsAction="never"-->
+        <!--android:title="TEST"-->
+         <!--/>-->
+
+    <item android:id="@+id/action_update_specialisations"
+          android:title="@string/action_update_specialisations"
+          android:orderInCategory="50"
+          app:showAsAction="never" />
+
+    <item android:id="@+id/action_account_details"
+          android:title="@string/action_account_details"
+          android:orderInCategory="60"
+          app:showAsAction="never" />
+
+    <item android:id="@+id/action_password"
+          android:title="@string/action_update_password"
+          android:orderInCategory="70"
+          app:showAsAction="never" />
+
+    <item android:id="@+id/action_avatar"
+          android:title="@string/action_update_avatar"
+          android:orderInCategory="70"
+          app:showAsAction="never" />
+
+
+    <item android:id="@+id/action_set_download_type"
+        android:title="Set Download Type"
+        android:orderInCategory="80"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_sign_out"
+          android:title="@string/action_sign_out"
+          android:orderInCategory="90"
+          app:showAsAction="never" />
+
+</menu>

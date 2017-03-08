@@ -1,0 +1,7 @@
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@+id/settings_fragment"
+          android:name="hr.fer.zari.midom.fragments.SettingsAvatarFragment"
+          tools:layout="@layout/fragment_settings_avatar"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" />

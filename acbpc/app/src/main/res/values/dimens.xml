@@ -1,0 +1,14 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="login_name_size">50sp</dimen>
+    <dimen name="login_name_padding">42sp</dimen>
+    <dimen name="studies_reject_button_margin_right">24sp</dimen>
+    <dimen name="loading_padding">16sp</dimen>
+
+    <dimen name="studies_padding">16sp</dimen>
+    <dimen name="two_button_margin">24sp</dimen>
+    <dimen name="cr_info_text_size">20sp</dimen>
+    <dimen name="text_margin">16dp</dimen>
+</resources>

@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="hr.fer.zari.midom.activities.FullScreenImageActivity">
+
+    <item android:id="@+id/menu_study_text"
+        android:icon="@drawable/ic_action_insert_comment"
+        app:showAsAction="ifRoom"
+        android:title="@string/enter_text" />
+
+    <item android:id="@+id/menu_study_record"
+        android:icon="@drawable/ic_action_mic"
+        app:showAsAction="ifRoom"
+        android:title="@string/voice_record" />
+
+    <item android:id="@+id/menu_study_send"
+        android:icon="@drawable/ic_action_send"
+        app:showAsAction="ifRoom"
+        android:title="@string/send_consultation" />
+
+</menu>
