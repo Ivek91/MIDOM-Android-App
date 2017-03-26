@@ -1,0 +1,3 @@
+C:/Users/Ivek/Documents/Android_workspace/acbpc/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/test-lib.dir
+C:/Users/Ivek/Documents/Android_workspace/acbpc/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/edit_cache.dir
+C:/Users/Ivek/Documents/Android_workspace/acbpc/app/.externalNativeBuild/cmake/debug/x86/CMakeFiles/rebuild_cache.dir

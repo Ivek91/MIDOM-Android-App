@@ -9,6 +9,7 @@
     <string name="action_update_password">Update Password</string>
     <string name="action_update_avatar">Update Avatar</string>
     <string name="action_set_download_type">Set download type</string>
+    <string name="action_ndktest">NDK test</string>
     <string name="action_sign_out">Sign Out</string>
     <string name="environment">Environment</string>
     <string name="accept">Accept</string>
@@ -134,5 +135,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_set_download_type">SetDownloadType</string>
+    <string name="title_activity_ndktest">NDKtest</string>
 
 </resources>

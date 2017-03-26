@@ -34,6 +34,11 @@ import retrofit.client.Response;
 
 public class MainActivity extends ActionBarActivity implements MainFragment.OnFragmentInteractionListener {
 
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("test-lib");
+    }
+
     public final static String EXTRA_STUDY_ID = "hr.fer.zari.midom.STUDY_ID";
     public final static String EXTRA_CR_ID = "hr.fer.zari.midom.CR_ID";
     public final static String EXTRA_CR_OWNER = "hr.fer.zari.midom.CR_OWNER";
@@ -177,6 +182,11 @@ public class MainActivity extends ActionBarActivity implements MainFragment.OnFr
             Intent intent = new Intent(this, SetDownloadType.class);
             startActivity(intent);
             return true;
+        } else if(id == R.id.action_ndktest) {
+                Log.v(TAG, "NDK test");
+                Intent intent = new Intent(this, NDKtest.class);
+                startActivity(intent);
+                return true;
         } else if(id == R.id.action_sign_out) {
             MidomApplication midomApplication = (MidomApplication) getApplication();
             midomApplication.getCookieManager().getCookieStore().removeAll();

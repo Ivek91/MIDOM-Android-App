@@ -36,8 +36,13 @@
 
 
     <item android:id="@+id/action_set_download_type"
-        android:title="Set Download Type"
-        android:orderInCategory="80"
+    android:title="Set Download Type"
+    android:orderInCategory="80"
+    app:showAsAction="never" />
+
+    <item android:id="@+id/action_ndktest"
+        android:title="NDKtest"
+        android:orderInCategory="85"
         app:showAsAction="never" />
 
     <item android:id="@+id/action_sign_out"
