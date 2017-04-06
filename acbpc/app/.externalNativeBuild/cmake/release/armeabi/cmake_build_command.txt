@@ -1,11 +1,11 @@
 Executable : C:\Users\Ivek\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\cmake.exe
 arguments : 
--HC:\Users\Ivek\Documents\Android_workspace\acbpc\app
--BC:\Users\Ivek\Documents\Android_workspace\acbpc\app\.externalNativeBuild\cmake\release\armeabi
+-HC:\Users\Ivek\Documents\acbpc\app
+-BC:\Users\Ivek\Documents\acbpc\app\.externalNativeBuild\cmake\release\armeabi
 -GAndroid Gradle - Ninja
 -DANDROID_ABI=armeabi
 -DANDROID_NDK=C:\Users\Ivek\AppData\Local\Android\Sdk\ndk-bundle
--DCMAKE_LIBRARY_OUTPUT_DIRECTORY=C:\Users\Ivek\Documents\Android_workspace\acbpc\app\build\intermediates\cmake\release\obj\armeabi
+-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=C:\Users\Ivek\Documents\acbpc\app\build\intermediates\cmake\release\obj\armeabi
 -DCMAKE_BUILD_TYPE=Release
 -DCMAKE_MAKE_PROGRAM=C:\Users\Ivek\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\ninja.exe
 -DCMAKE_TOOLCHAIN_FILE=C:\Users\Ivek\AppData\Local\Android\Sdk\ndk-bundle\build\cmake\android.toolchain.cmake

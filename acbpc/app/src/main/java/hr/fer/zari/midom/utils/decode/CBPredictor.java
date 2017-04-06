@@ -11,14 +11,15 @@ public class CBPredictor implements Predictor {
 	public VectorDistMeasure vectorDistM;
 	public BlendPenaltyType penTypeM;
 	private boolean cumPenaltiesM;
-	private boolean penComputedM = false;
+	//private boolean penComputedM = false;
 	private int radiusM;
 	private int cellSizeM;
 	private int vectorSizeM;
 	private int xBorderM;
 	private int yBorderM;
 	private int spcCorrectionM = 0;
-	private int thresholdM;
+//	private int thresholdM;
+
 	//private TestPredictorsOld predictors;
 	private Predictor[] predictorSetM = new Predictor[PRED_NUM];
 
@@ -45,7 +46,7 @@ public class CBPredictor implements Predictor {
         this.cellSizeM = cellSize;
         this.vectorSizeM = vSize;
         this.cumPenaltiesM = cumPenalties;
-        this.thresholdM = threshold;
+       // this.thresholdM = threshold;
         this.cellM = new CellPixelData[cellSizeM];
 
 
@@ -69,8 +70,8 @@ public class CBPredictor implements Predictor {
 
 	public int predict(int tr, int tc, PGMImage pgmP) {
 		int prediction = 0;
-
-		if (tc < xBorderM || (tc > pgmP.getColumns() - xBorderM) || tr < yBorderM) {
+		int Columns = pgmP.getColumns();
+		if (tc < xBorderM || (tc > Columns - xBorderM) || tr < yBorderM) {
 			prediction = new MEDPredictor().predict(tr, tc, pgmP);
 		} else {
 			resetCell();
@@ -84,7 +85,7 @@ public class CBPredictor implements Predictor {
 					int xOff = cpd.getxOff();
 					int yOff = cpd.getyOff();
 					int cellPred = blendPredictors(tr + yOff, tc + xOff, pgmP);
-					int cellPixel = pgmP.getPixel(tr + yOff, tc + xOff);
+					int cellPixel = pgmP.getPixel((tr + yOff) * Columns + tc + xOff);
 					spcCorrectionM += cellPixel - cellPred;
 				}
 				spcCorrectionM /= cellSizeM;
@@ -93,7 +94,7 @@ public class CBPredictor implements Predictor {
 			prediction = blendPredictors(tr, tc, pgmP) + spcCorrectionM;
 		}
 
-		return prediction > pgmP.getMaxGray() ? pgmP.getMaxGray() : prediction;
+		return prediction > 255 ? 255 : prediction;
 	}
 /*
 	public int predict(int tr, int tc, int prevError, PGMImage pgmP) {
@@ -138,13 +139,14 @@ public class CBPredictor implements Predictor {
 	}
 
 	private void searchTheWindow(int tr, int tc, PGMImage pgmP) {
+		int Columns = pgmP.getColumns();
 		int[] originVector = new int[vectorSizeM];
 		int[] currVector = new int[vectorSizeM];
 
 		for (int i = 0; i < vectorSizeM; i++) {
 			int x = tc + offsetsSM[i][0];
 			int y = tr + offsetsSM[i][1];
-			originVector[i] = pgmP.getPixel(y, x);
+			originVector[i] = pgmP.getPixel(y * Columns + x);
 		}
 
 		for(int y = -radiusM; y <= 0; y++){
@@ -157,7 +159,7 @@ public class CBPredictor implements Predictor {
 				int pY = tr + y;
 
 				for (int i = 0; i < vectorSizeM; i++) {
-					currVector[i] = pgmP.getPixel(pY + offsetsSM[i][1], pX
+					currVector[i] = pgmP.getPixel((pY + offsetsSM[i][1]) * Columns + pX
 							+ offsetsSM[i][0]);
 				}
 
@@ -216,12 +218,12 @@ public class CBPredictor implements Predictor {
 		if (!cumPenaltiesM) {
 			resetPenalties();
 		}
-
+		int Columns = pgmP.getColumns();
 		for (CellPixelData cpd : cellM) {
 			int xOff = cpd.getxOff();
 			int yOff = cpd.getyOff();
 
-			int pixel = pgmP.getPixel(tr + yOff, tc + xOff);
+			int pixel = pgmP.getPixel((tr + yOff) * Columns + tc + xOff);
 
 
 			for (int predictor = 0; predictor < PRED_NUM; predictor++)
@@ -262,7 +264,6 @@ public class CBPredictor implements Predictor {
 
 	private int blendPredictors(int tr, int tc, PGMImage image) {
 		int[] predictions = new int[PRED_NUM];
-
 		for(int predictor = 0; predictor < PRED_NUM; predictor++)
 		{
 			predictions[predictor] = predictorSetM[predictor].predict(tr, tc, image);

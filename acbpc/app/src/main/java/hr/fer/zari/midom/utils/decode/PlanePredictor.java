@@ -4,12 +4,13 @@ public class PlanePredictor implements Predictor{
 
     @Override
     public int predict(int tr, int tc, PGMImage image) {
-        int north = image.getPixel(tr - 1, tc);
-        int west = image.getPixel(tr, tc - 1);
-        int northWest = image.getPixel(tr - 1, tc - 1);
+        int Columns = image.getColumns();
+        int north = image.getPixel((tr - 1) * Columns + tc);
+        int west = image.getPixel(tr * Columns + tc - 1);
+        int northWest = image.getPixel((tr - 1) * Columns + tc - 1);
 
-        if ((north + west - northWest) > image.getMaxGray()) {
-            return image.getMaxGray();
+        if ((north + west - northWest) > 255) {
+            return 255;
         } else if ((north + west - northWest) < 0) {
             return 0;
         }

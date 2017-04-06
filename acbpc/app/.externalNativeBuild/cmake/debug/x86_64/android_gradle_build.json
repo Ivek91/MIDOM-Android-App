@@ -1,9 +1,9 @@
 
 {
-	"buildFiles" : [ "C:/Users/Ivek/Documents/Android_workspace/acbpc/app/CMakeLists.txt" ],
+	"buildFiles" : [ "C:/Users/Ivek/Documents/acbpc/app/CMakeLists.txt" ],
 	"cleanCommands" : 
 	[
-		"C:\\Users\\Ivek\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.3155560\\bin\\cmake.exe --build C:\\Users\\Ivek\\Documents\\Android_workspace\\acbpc\\app\\.externalNativeBuild\\cmake\\debug\\x86_64 --target clean"
+		"C:\\Users\\Ivek\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.3155560\\bin\\cmake.exe --build C:\\Users\\Ivek\\Documents\\acbpc\\app\\.externalNativeBuild\\cmake\\debug\\x86_64 --target clean"
 	],
 	"cppFileExtensions" : [ "cpp" ],
 	"libraries" : 
@@ -12,18 +12,18 @@
 		{
 			"abi" : "x86_64",
 			"artifactName" : "test-lib",
-			"buildCommand" : "C:\\Users\\Ivek\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.3155560\\bin\\cmake.exe --build C:\\Users\\Ivek\\Documents\\Android_workspace\\acbpc\\app\\.externalNativeBuild\\cmake\\debug\\x86_64 --target test-lib",
+			"buildCommand" : "C:\\Users\\Ivek\\AppData\\Local\\Android\\Sdk\\cmake\\3.6.3155560\\bin\\cmake.exe --build C:\\Users\\Ivek\\Documents\\acbpc\\app\\.externalNativeBuild\\cmake\\debug\\x86_64 --target test-lib",
 			"buildType" : "debug",
 			"files" : 
 			[
 				
 				{
 					"flags" : "  --target=x86_64-none-linux-android --gcc-toolchain=C:/Users/Ivek/AppData/Local/Android/sdk/ndk-bundle/toolchains/x86_64-4.9/prebuilt/windows-x86_64 --sysroot=C:/Users/Ivek/AppData/Local/Android/sdk/ndk-bundle/platforms/android-21/arch-x86_64  -Dtest_lib_EXPORTS -isystem C:\\Users\\Ivek\\AppData\\Local\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include -isystem C:\\Users\\Ivek\\AppData\\Local\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\libs\\x86_64\\include -isystem C:\\Users\\Ivek\\AppData\\Local\\Android\\sdk\\ndk-bundle\\sources\\cxx-stl\\gnu-libstdc++\\4.9\\include\\backward  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info -O0 -fno-limit-debug-info  -fPIC    -c ",
-					"src" : "C:/Users/Ivek/Documents/Android_workspace/acbpc/app/src/main/cpp/test.cpp",
-					"workingDirectory" : "C:/Users/Ivek/Documents/Android_workspace/acbpc/app/.externalNativeBuild/cmake/debug/x86_64"
+					"src" : "C:/Users/Ivek/Documents/acbpc/app/src/main/cpp/test.cpp",
+					"workingDirectory" : "C:/Users/Ivek/Documents/acbpc/app/.externalNativeBuild/cmake/debug/x86_64"
 				}
 			],
-			"output" : "C:/Users/Ivek/Documents/Android_workspace/acbpc/app/build/intermediates/cmake/debug/obj/x86_64/libtest-lib.so",
+			"output" : "C:/Users/Ivek/Documents/acbpc/app/build/intermediates/cmake/debug/obj/x86_64/libtest-lib.so",
 			"toolchain" : "3299896655"
 		}
 	},

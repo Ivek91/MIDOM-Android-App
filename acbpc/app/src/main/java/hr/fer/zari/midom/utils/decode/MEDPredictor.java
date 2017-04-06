@@ -11,28 +11,30 @@ public class MEDPredictor implements Predictor{
 
     @Override
     public int predict(int tr, int tc, PGMImage image) {
-
+        int Columns = image.getColumns();
         if(tc==0&&tr==0) {
             prediction = 0;
         }
 
         else if(tr==0) {
-            prediction = image.getPixel(tr, tc - 1);
+            //prediction = image.getPixel(tr * Columns + tc - 1);
+            prediction = image.getPixel(tc - 1);
         }
 
         else if(tc==0) {
-            prediction = image.getPixel(tr - 1, tc);
+            //prediction = image.getPixel((tr - 1) * Columns + tc);
+            prediction = image.getPixel((tr - 1) * Columns);
         }
 
         else {
-            north = image.getPixel(tr - 1, tc);
-            northWest = image.getPixel(tr - 1, tc - 1);
-            west = image.getPixel(tr, tc - 1);
+            north = image.getPixel((tr - 1) * Columns + tc);
+            northWest = image.getPixel((tr - 1) * Columns + tc - 1);
+            west = image.getPixel(tr * Columns + tc - 1);
             prediction = med(north, west, northWest);
         }
 
-        if(prediction>image.getMaxGray()){
-            prediction = image.getMaxGray();
+        if(prediction > 255){
+            prediction = 255;
         }
 
         return prediction;

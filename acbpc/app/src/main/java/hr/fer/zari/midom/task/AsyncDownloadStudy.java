@@ -302,6 +302,7 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
         Predictor predictor = new CBPredictor(CBPredictor.VectorDistMeasure.L2, CBPredictor.BlendPenaltyType.SSQR, 5, 6, 6, 0, false);
 
         int renewedPixel;
+        //int Columns = decodedImage.getColumns();
         for (int k = 0; k < buffer[1]; k++) {
             for (int j = 0; j < buffer[0]; j++) {
                 int prediction = predictor.predict(k, j, decodedImage);

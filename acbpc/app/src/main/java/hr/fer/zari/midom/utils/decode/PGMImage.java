@@ -12,7 +12,7 @@ public class PGMImage {
 	private int Columns, Rows, MaxGray;
 
 	// pgm imagedata
-	private int[][] Pixels;
+	//private int[][] Pixels;
 	private int[] PixelsP;
 
 	// constructors
@@ -23,7 +23,7 @@ public class PGMImage {
 		Columns = 0;
 		Rows = 0;
 		MaxGray = 0;
-		Pixels = null;
+	//	Pixels = null;
 		PixelsP = null;
 	}
 
@@ -41,38 +41,49 @@ public class PGMImage {
 	}
 
 	// get functions
-	public String getFilePath() {
-		return (FilePath);
-	}
+
+	//public String getFilePath() {
+	//	return (FilePath);
+	//}
 
 	public String getType() {
 		return (Type);
 	}
 
-	public String getComment() {
-		return (Comment);
-	}
+	//public String getComment() {return (Comment);
+	//}
 
 	public int getColumns() {
 		return (Columns);
 	}
 
-	public int getRows() {
-		return (Rows);
-	}
+	//public int getRows() {
+	//	return (Rows);
+	//}
 
-	public int getMaxGray() {
-		return (MaxGray);
-	}
+	//public int getMaxGray() {
+	//	return (MaxGray);
+	//}
 
-	public int getPixel(int tr, int tc) {
-		return (tr < 0 || tr > Rows - 1 || tc < 0 || tc > Columns - 1 ? 0
-				: Pixels[tr][tc]);
-	}
+	// 1. test za optimizaciju
+	//public int getPixel(int tr, int tc) {
+	//	return (tr < 0 || tr > Rows - 1 || tc < 0 || tc > Columns - 1 ? 0
+	//			: Pixels[tr][tc]);
+	//}
 
-	public int getPixel(int pPos) {
-		return (pPos >= Rows * Columns ? 0 : PixelsP[pPos]);
-	}
+    // 2. test za optimizaciju
+	//public int getPixel(int tr, int tc) {
+	//	return Pixels[tr][tc];
+	//}
+
+    // 3. test za optimizaciju
+	//public int getPixel(int pPos) {
+	//	return (pPos >= Rows * Columns ? 0 : PixelsP[pPos]);
+	//}
+
+    public int getPixel(int pPos) {
+        	return (PixelsP[pPos]);
+    }
 
 	// set functions
 	public void setFilePath(String tFilePath) {
@@ -83,14 +94,14 @@ public class PGMImage {
 		Type = tType;
 	}
 
-	public void setComment(String tComment) {
-		Comment = tComment;
-	}
+	//public void setComment(String tComment) {
+	//	Comment = tComment;
+	//}
 
 	public void setDimension(int tColumns, int tRows) {
 		Rows = tRows;
 		Columns = tColumns;
-		Pixels = new int[Rows][Columns];
+	//	Pixels = new int[Rows][Columns];
 		PixelsP = new int[Rows * Columns];
 	}
 
@@ -98,13 +109,22 @@ public class PGMImage {
 		MaxGray = tMaxGray;
 	}
 
-	public void setPixel(int tr, int tc, int tval) {
-		if (tr < 0 || tr > Rows - 1 || tc < 0 || tc > Columns - 1)
-			return;
-		else
-			Pixels[tr][tc] = tval;
-		PixelsP[tr * Columns + tc] = tval;
-	}
+	// 4. test za optimizaciju
+	//public void setPixel(int tr, int tc, int tval) {
+	//	if (tr < 0 || tr > Rows - 1 || tc < 0 || tc > Columns - 1)
+	//		return;
+		//else
+		//	Pixels[tr][tc] = tval;
+	//	PixelsP[tr * Columns + tc] = tval;
+	//}
+
+    public void setPixel(int tr, int tc, int tval) {
+        //if (tr < 0 || tr > Rows - 1 || tc < 0 || tc > Columns - 1)
+        //    return;
+        //else
+        //	Pixels[tr][tc] = tval;
+        PixelsP[tr * Columns + tc] = tval;
+    }
 
 	// methods
 	public void readImage() {
@@ -188,7 +208,7 @@ public class PGMImage {
 			MaxGray = Integer.parseInt(tstr);
 
 			// read pixels from ImageData
-			Pixels = new int[Rows][Columns];
+			//Pixels = new int[Rows][Columns];
 			PixelsP = new int[Rows * Columns];
 			byte[] buff = new byte[Rows * Columns];
 			int n = fin.read(buff);
@@ -237,7 +257,7 @@ public class PGMImage {
 
 			for (int r = 0; r < Rows; r++) {
 				for (int c = 0; c < Columns; c++) {
-					fout.write(getPixel(r, c));
+					fout.write(getPixel(r * Columns + c));
 				}
 			}
 
@@ -248,65 +268,17 @@ public class PGMImage {
 		}
 	}
 
-	public void writeImageAs(String tFilePath) {
-		PGMImage imgout = new PGMImage(getColumns(), getRows());
+	//public void writeImageAs(String tFilePath) {
+    //    int Columns = getColumns();
+	//	PGMImage imgout = new PGMImage(Columns, Columns);
+    //
+	//	for (int r = 0; r < Columns; r++) {
+	//		for (int c = 0; c < Columns; c++) {
+	//			imgout.setPixel(r, c, getPixel(r * Columns + c));
+	//		}
+	//	}
 
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getColumns(); c++) {
-				imgout.setPixel(r, c, getPixel(r, c));
-			}
-		}
+	//	imgout.setFilePath(tFilePath);
+	//	imgout.writeImage();
 
-		imgout.setFilePath(tFilePath);
-		imgout.writeImage();
-	}
-
-	// predictor image
-	//TODO: Ova metoda je besmislena - izbaciti ju, ovo ide u EncodeImageOld
-	/*public PGMImage getErrorImage(String path, PGMImage image) {
-		PGMImage ret = new PGMImage();
-		ret.Columns = this.Columns;
-		ret.Rows = this.Rows;
-		ret.FilePath = path;
-		ret.Comment = this.Comment;
-		ret.MaxGray = this.MaxGray;
-		ret.Type = this.Type;
-		//CBPredictor predictor = new CBPredictor(CBPredictor.VectorDistMeasure.L2, CBPredictor.BlendPenaltyType.SSQR, 5, 6, 6, 0, false);
-		TestPredictors predictor = new TestPredictors();
-		int[][] newPixels = new int[this.Rows][this.Columns];
-		ret.Pixels = newPixels;
-
-		for (int i = 0; i < this.Rows; i++) {
-			for (int j = 0; j < this.Columns; j++) {
-				newPixels[i][j] = Pixels[i][j] - predictor.MEDPredictor(i, j, image);
-				//newPixels[i][j] = Pixels[i][j] - predictor.predict(i, j, image);
-			}
-		}
-		return ret;
-	}
-	*/
-	//TODO: Ova metoda je besmislena - izbaciti ju, ovo ide u DecodeImageOld
-	/*public PGMImage getOriginal(String path, PGMImage error, PGMImage original) {
-		PGMImage ret = new PGMImage();
-		ret.Columns = error.Columns;
-		ret.Rows = error.Rows;
-		ret.FilePath = path;
-		ret.Comment = error.Comment;
-		ret.MaxGray = error.MaxGray;
-		ret.Type = error.Type;
-		//CBPredictor predictor = new CBPredictor(CBPredictor.VectorDistMeasure.L2, CBPredictor.BlendPenaltyType.SSQR, 5, 6, 6, 0, false);
-		TestPredictors predictor = new TestPredictors();
-		int[][] newPixels = new int[error.Rows][error.Columns];
-		ret.Pixels = newPixels;
-
-		for (int i = 0; i < this.Rows; i++) {
-			for (int j = 0; j < this.Columns; j++) {
-				newPixels[i][j] = error.Pixels[i][j] + predictor.MEDPredictor(i, j, original);
-				//newPixels[i][j] = error.Pixels[i][j] + predictor.predict(i, j, original);
-				original.setPixel(i,j,newPixels[i][j]);
-			}
-		}
-		return ret;
-	}
-	*/
 }
