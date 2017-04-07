@@ -255,8 +255,8 @@ public class GRCoder {
 	}
 
 	int getOptimalParamK (){
-		return 2;
-		/*
+		//return 2;
+
 		int i = 0;
 
 		for (i = 0; (symbolCnt << i) < errorSum; i++){
@@ -266,7 +266,7 @@ public class GRCoder {
 			}
 		}
 		return i;
-		*/
+
 	}
 
 	void update (int absError){
