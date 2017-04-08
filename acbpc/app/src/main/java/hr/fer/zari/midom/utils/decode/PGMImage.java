@@ -255,11 +255,19 @@ public class PGMImage {
 			tstr = tstr + "\n";
 			fout.write(tstr.getBytes());
 
-			for (int r = 0; r < Rows; r++) {
-				for (int c = 0; c < Columns; c++) {
-					fout.write(getPixel(r * Columns + c));
-				}
-			}
+            //write Pixel Data
+
+            for (int i = 0; i < PixelsP.length; i++){
+                fout.write(PixelsP[i]);
+            }
+
+		//	for (int r = 0; r < Rows; r++) {
+		//		for (int c = 0; c < Columns; c++) {
+		//			//fout.write(getPixel(r * Columns + c));
+		//			fout.write(PixelsP[r * Columns + c] );
+		//		}
+		//	}
+
 
 			fout.close();
 		} catch (Exception err) {
