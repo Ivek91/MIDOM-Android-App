@@ -37,7 +37,7 @@ build CMakeFiles/test-lib.dir/src/main/cpp/test.cpp.o: CXX_COMPILER__test-lib ..
   DEP_FILE = CMakeFiles\test-lib.dir\src\main\cpp\test.cpp.o.d
   FLAGS = -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security  -g -DANDROID -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -Wa,--noexecstack -Wformat -Werror=format-security   -O0 -fno-limit-debug-info -O0 -fno-limit-debug-info  -fPIC
   INCLUDES = -isystem C:/Users/Ivek/AppData/Local/Android/sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/include -isystem C:/Users/Ivek/AppData/Local/Android/sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/libs/arm64-v8a/include -isystem C:/Users/Ivek/AppData/Local/Android/sdk/ndk-bundle/sources/cxx-stl/gnu-libstdc++/4.9/include/backward
-  IN_ABS = C:\Users\Ivek\Documents\acbpc\app\src\main\cpp\test.cpp
+  IN_ABS = C:\Users\Ivek\Documents\GIT\MIDOM-Android-App\acbpc\app\src\main\cpp\test.cpp
   OBJECT_DIR = CMakeFiles\test-lib.dir
   OBJECT_FILE_DIR = CMakeFiles\test-lib.dir\src\main\cpp
 
@@ -64,7 +64,7 @@ build ../../../../build/intermediates/cmake/debug/obj/arm64-v8a/libtest-lib.so: 
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\Ivek\Documents\acbpc\app\.externalNativeBuild\cmake\debug\arm64-v8a && C:\Users\Ivek\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\cmake.exe -E echo "No interactive CMake dialog available.""
+  COMMAND = cmd.exe /C "cd /D C:\Users\Ivek\Documents\GIT\MIDOM-Android-App\acbpc\app\.externalNativeBuild\cmake\debug\arm64-v8a && C:\Users\Ivek\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\cmake.exe -E echo "No interactive CMake dialog available.""
   DESC = No interactive CMake dialog available...
   restat = 1
 build edit_cache: phony CMakeFiles/edit_cache.util
@@ -73,7 +73,7 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 # Utility command for rebuild_cache
 
 build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
-  COMMAND = cmd.exe /C "cd /D C:\Users\Ivek\Documents\acbpc\app\.externalNativeBuild\cmake\debug\arm64-v8a && C:\Users\Ivek\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\cmake.exe -HC:\Users\Ivek\Documents\acbpc\app -BC:\Users\Ivek\Documents\acbpc\app\.externalNativeBuild\cmake\debug\arm64-v8a"
+  COMMAND = cmd.exe /C "cd /D C:\Users\Ivek\Documents\GIT\MIDOM-Android-App\acbpc\app\.externalNativeBuild\cmake\debug\arm64-v8a && C:\Users\Ivek\AppData\Local\Android\Sdk\cmake\3.6.3155560\bin\cmake.exe -HC:\Users\Ivek\Documents\GIT\MIDOM-Android-App\acbpc\app -BC:\Users\Ivek\Documents\GIT\MIDOM-Android-App\acbpc\app\.externalNativeBuild\cmake\debug\arm64-v8a"
   DESC = Running CMake to regenerate build system...
   pool = console
   restat = 1

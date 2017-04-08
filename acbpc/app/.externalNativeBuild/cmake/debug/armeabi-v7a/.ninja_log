@@ -1,3 +1,3 @@
 # ninja log v5
-1	248	0	CMakeFiles/test-lib.dir/src/main/cpp/test.cpp.o	bb099577602eb047
-249	421	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libtest-lib.so	cd7ed9e567378d10
+0	378	0	CMakeFiles/test-lib.dir/src/main/cpp/test.cpp.o	499e88769a874323
+379	560	0	../../../../build/intermediates/cmake/debug/obj/armeabi-v7a/libtest-lib.so	cd7ed9e567378d10
