@@ -143,6 +143,7 @@ public class CBPredictor implements Predictor {
 		int[] originVector = new int[vectorSizeM];
 		int[] currVector = new int[vectorSizeM];
 
+
 		for (int i = 0; i < vectorSizeM; i++) {
 			int x = tc + offsetsSM[i][0];
 			int y = tr + offsetsSM[i][1];
@@ -157,13 +158,14 @@ public class CBPredictor implements Predictor {
 
 				int pX = tc + x;
 				int pY = tr + y;
-
+				long dist = 0;
 				for (int i = 0; i < vectorSizeM; i++) {
 					currVector[i] = pgmP.getPixel((pY + offsetsSM[i][1]) * Columns + pX
 							+ offsetsSM[i][0]);
+					dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
 				}
 
-				long dist = calcDistance(originVector, currVector);
+				//long dist = calcDistance(originVector, currVector);
 
 				CellPixelData pixel = new CellPixelData(x, y, dist);
 
