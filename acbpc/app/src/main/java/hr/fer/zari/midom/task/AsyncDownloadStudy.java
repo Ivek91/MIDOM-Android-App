@@ -29,10 +29,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import hr.fer.zari.midom.R;
 import hr.fer.zari.midom.activities.SetDownloadType;
-import hr.fer.zari.midom.dialogs.DialogLoading;
-import hr.fer.zari.midom.picture.ImageBitmap;
+//import hr.fer.zari.midom.dialogs.DialogLoading;
 import hr.fer.zari.midom.utils.Constants;
 import hr.fer.zari.midom.utils.ImageException;
 import hr.fer.zari.midom.utils.MidomUtils;
@@ -44,8 +42,6 @@ import hr.fer.zari.midom.utils.decode.Predictor;
 import static com.google.android.gms.internal.a.F;
 import static com.google.android.gms.internal.a.I;
 import static com.google.android.gms.internal.a.T;
-import static hr.fer.zari.midom.utils.Constants.FOLDER;
-import static hr.fer.zari.midom.utils.Constants.TEST_FOLDER;
 import static hr.fer.zari.midom.utils.Constants.ZIP_EXTRACT;
 
 /**
@@ -66,7 +62,7 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
     private URL url;
     private int ID;
     //private AsyncLoadImage.OnTaskCompleted listener;
-    private DialogLoading dialogLoading;
+    //private DialogLoading dialogLoading;
     private unzipCompleted listener;
     private String downloadType;
     boolean isWiFi;
@@ -101,9 +97,10 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
         super.onPreExecute();
         MidomUtils.lockOrientation(activity);
         Log.d(TAG, "Started onPreExecute");
-        dialogLoading = new DialogLoading();
-        dialogLoading.setTitle("Downloading study");
-        dialogLoading.show(activity.getFragmentManager(), TAG);
+        Toast.makeText(activity, "Downloading study", Toast.LENGTH_LONG).show();
+        //dialogLoading = new DialogLoading();
+        //dialogLoading.setTitle("Downloading study");
+        //dialogLoading.show(activity.getFragmentManager(), TAG);
 
 //        dialogDownloading = new DialogDownloading();
 //        dialogDownloading.show(activity.getFragmentManager(), TAG);
@@ -120,7 +117,6 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
     @Override
     protected Void doInBackground(Void... v) {
         Log.d(TAG, "Started doInBackground");
-
         InputStream input = null;
         OutputStream output = null;
         try {
@@ -203,7 +199,7 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
     @Override
     protected void onPostExecute(Void v) {
         super.onPostExecute(v);
-        dialogLoading.dismiss();
+        //dialogLoading.dismiss();
         MidomUtils.unLockOrientation(activity);
         listener.unzipFinished();
     }
@@ -302,7 +298,6 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
         Predictor predictor = new CBPredictor(CBPredictor.VectorDistMeasure.L2, CBPredictor.BlendPenaltyType.SSQR, 5, 6, 6, 0, false);
 
         int renewedPixel;
-        //int Columns = decodedImage.getColumns();
         for (int k = 0; k < buffer[1]; k++) {
             for (int j = 0; j < buffer[0]; j++) {
                 int prediction = predictor.predict(k, j, decodedImage);
