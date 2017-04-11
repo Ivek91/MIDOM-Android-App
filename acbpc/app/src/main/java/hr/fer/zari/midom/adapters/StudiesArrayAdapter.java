@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import java.io.ByteArrayInputStream;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,7 +30,9 @@ public class StudiesArrayAdapter extends ArrayAdapter<ConsultationRequest> {
         super(context, 0, objects);
         this.context = context;
         this.requests = objects;
+        Collections.reverse(requests);
     }
+
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
