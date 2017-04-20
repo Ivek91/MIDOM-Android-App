@@ -23,7 +23,6 @@ public class PGMImage {
 		Columns = 0;
 		Rows = 0;
 		MaxGray = 0;
-	//	Pixels = null;
 		PixelsP = null;
 	}
 
@@ -235,6 +234,7 @@ public class PGMImage {
 			// write image header
 			// write PGM magic value 'P5'
 			String tstr;
+            byte[] PixelB = new byte[PixelsP.length];
 			tstr = "P5" + "\n";
 			fout.write(tstr.getBytes());
 
@@ -255,38 +255,21 @@ public class PGMImage {
 			tstr = tstr + "\n";
 			fout.write(tstr.getBytes());
 
+            //write Pixel Data old
+			/*for (int i = 0; i < PixelsP.length; i++){
+                Log.e("dekodiranje", String.valueOf(i));
+				fout.write(PixelsP[i]);
+			}*/
+
             //write Pixel Data
-
             for (int i = 0; i < PixelsP.length; i++){
-                fout.write(PixelsP[i]);
+                PixelB[i] = (byte) (PixelsP[i]);
             }
-
-		//	for (int r = 0; r < Rows; r++) {
-		//		for (int c = 0; c < Columns; c++) {
-		//			//fout.write(getPixel(r * Columns + c));
-		//			fout.write(PixelsP[r * Columns + c] );
-		//		}
-		//	}
-
-
+            fout.write(PixelB);
 			fout.close();
 		} catch (Exception err) {
 			System.out.println("Error: " + err);
 			System.exit(-1);
 		}
 	}
-
-	//public void writeImageAs(String tFilePath) {
-    //    int Columns = getColumns();
-	//	PGMImage imgout = new PGMImage(Columns, Columns);
-    //
-	//	for (int r = 0; r < Columns; r++) {
-	//		for (int c = 0; c < Columns; c++) {
-	//			imgout.setPixel(r, c, getPixel(r * Columns + c));
-	//		}
-	//	}
-
-	//	imgout.setFilePath(tFilePath);
-	//	imgout.writeImage();
-
 }

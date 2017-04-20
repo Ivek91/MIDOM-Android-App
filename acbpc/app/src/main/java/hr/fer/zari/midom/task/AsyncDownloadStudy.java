@@ -308,7 +308,7 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
         }
 
         String filepath = ZIP_EXTRACT +"/images/" + file.getName().substring(0, file.getName().indexOf(".")) + ".pgm";
-        Log.e("decoder", "Saving file to " + filepath);
+        Log.e("dekodiranje", "Saving file to " + filepath);
         decodedImage.setFilePath(filepath);
         decodedImage.writeImage();
     }
