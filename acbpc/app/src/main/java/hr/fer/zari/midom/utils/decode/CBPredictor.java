@@ -4,6 +4,11 @@ import java.util.Arrays;
 
 public class CBPredictor implements Predictor {
 
+	/* Used to load the 'native-lib' library on application startup. */
+	static {
+		System.loadLibrary("test-lib");
+	}
+
 	private final int PRED_NUM = 7;
 	public static final boolean CB_SPC_CORRECTION = false;
 	private long[] penaltiesM = new long[PRED_NUM];
@@ -163,6 +168,7 @@ public class CBPredictor implements Predictor {
 				    for (int i = 0; i < vectorSizeM; i++) {
 					    currVector[i] = pgmP.getPixel((pY + offsetsSM[i][1]) * Columns + pX
 					    		+ offsetsSM[i][0]);
+						//dist += calcDistance(originVector[i],currVector[i]);
                         dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
                     }
                 }
@@ -200,6 +206,10 @@ public class CBPredictor implements Predictor {
 			}
         }
 	}
+
+
+	/* NDK test calcDistance method */
+	public native long calcDistance(int originVector, int currVector);
 
 /*	private long calcDistance(int[] originVector, int[] currVector) {
 		long distance = 0;
