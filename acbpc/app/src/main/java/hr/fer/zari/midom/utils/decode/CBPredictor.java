@@ -159,22 +159,49 @@ public class CBPredictor implements Predictor {
 				int pX = tc + x;
 				int pY = tr + y;
 				long dist = 0;
-				for (int i = 0; i < vectorSizeM; i++) {
-					currVector[i] = pgmP.getPixel((pY + offsetsSM[i][1]) * Columns + pX
-							+ offsetsSM[i][0]);
-					dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
-				}
-
+                if (vectorDistM == VectorDistMeasure.L2){
+				    for (int i = 0; i < vectorSizeM; i++) {
+					    currVector[i] = pgmP.getPixel((pY + offsetsSM[i][1]) * Columns + pX
+					    		+ offsetsSM[i][0]);
+                        dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
+                    }
+                }
+                else if (vectorDistM == VectorDistMeasure.L1) {
+                    for (int i = 0; i < vectorSizeM; i++) {
+                        currVector[i] = pgmP.getPixel((pY + offsetsSM[i][1]) * Columns + pX
+                                + offsetsSM[i][0]);
+                        dist += Math.abs(originVector[i] - currVector[i]);
+                    }
+                }
+                else if (vectorDistM == VectorDistMeasure.LINF) {
+                    for (int i = 0; i < vectorSizeM; i++) {
+                        currVector[i] = pgmP.getPixel((pY + offsetsSM[i][1]) * Columns + pX
+                                + offsetsSM[i][0]);
+                        int distTmp = Math.abs(originVector[i] - currVector[i]);
+                        if (distTmp > dist)
+                            dist = distTmp;
+                    }
+                }
+                else if (vectorDistM == VectorDistMeasure.WL2) {
+                    for (int i = 0; i < vectorSizeM; i++) {
+                        currVector[i] = pgmP.getPixel((pY + offsetsSM[i][1]) * Columns + pX
+                                + offsetsSM[i][0]);
+                        if (i == 0 || i == 2) {
+                            dist += 2 * ((originVector[i] - currVector[i]) * (originVector[i] - currVector[i]));
+                        } else {
+                            dist += (originVector[i] - currVector[i])
+                                    * (originVector[i] - currVector[i]);
+                        }
+                    }
+                }
 				//long dist = calcDistance(originVector, currVector);
-
 				CellPixelData pixel = new CellPixelData(x, y, dist);
-
 				updateCell(pixel);
 			}
-		}
+        }
 	}
 
-	private long calcDistance(int[] originVector, int[] currVector) {
+/*	private long calcDistance(int[] originVector, int[] currVector) {
 		long distance = 0;
 
 		for (int i = 0; i < vectorSizeM; i++) {
@@ -199,7 +226,7 @@ public class CBPredictor implements Predictor {
 
 		return distance;
 	}
-
+*/
 	private void updateCell(CellPixelData pixel) {
 		int indexMax = 0;
 		long maxDistance = 0;
