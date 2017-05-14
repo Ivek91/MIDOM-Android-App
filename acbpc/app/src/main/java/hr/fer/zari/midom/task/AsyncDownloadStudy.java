@@ -156,9 +156,9 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
                 List<File> files = getFiles();
                 for (File file:  files){
                     if (file.getName().toLowerCase().endsWith(".cbp")){
-                        Log.e(TAG, "Decompressing " + file.getName());
+                        Log.e(TAG, "DEKODIRANJE START" + file.getName());
                         decompressFile(file);
-                        Log.e(TAG, "Decompressed " + file.getName());
+                        Log.e(TAG, "DEKODIRANJE STOP" + file.getName());
 
                     }
                 }
@@ -291,26 +291,26 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
 
         int[] buffer = dekoder.decode(file.getAbsolutePath());
 
-        PGMImage decodedImage = new PGMImage();
-        decodedImage.setDimension(buffer[0], buffer[1]);
-        decodedImage.setMaxGray(buffer[2]);
+        // PGMImage decodedImage = new PGMImage();
+        // decodedImage.setDimension(buffer[0], buffer[1]);
+        // decodedImage.setMaxGray(buffer[2]);
 
         Predictor predictor = new CBPredictor(CBPredictor.VectorDistMeasure.L2, CBPredictor.BlendPenaltyType.SSQR, 5, 6, 6, 0, false);
 
-        int renewedPixel;
-        for (int k = 0; k < buffer[1]; k++) {
-            for (int j = 0; j < buffer[0]; j++) {
-                int prediction = predictor.predict(k, j, decodedImage);
-                renewedPixel = buffer[k * buffer[0] + j + 3] + prediction;
-                decodedImage.setPixel(k, j, renewedPixel);
-            }
-            if (k % 25 == 0) Log.e("dekodiranje", String.valueOf(k));
-        }
-
+       // int renewedPixel;
+        //for (int k = 0; k < buffer[1]; k++) {
+        //    for (int j = 0; j < buffer[0]; j++) {
+        //        int prediction = predictor.predict(k, j, decodedImage);
+        //        renewedPixel = buffer[k * buffer[0] + j + 3] + prediction;
+        //        decodedImage.setPixel(k, j, renewedPixel);
+        //    }
+            //if (k % 25 == 0) Log.e("dekodiranje", String.valueOf(k));
+        //}
         String filepath = ZIP_EXTRACT +"/images/" + file.getName().substring(0, file.getName().indexOf(".")) + ".pgm";
-        Log.e("dekodiranje", "Saving file to " + filepath);
-        decodedImage.setFilePath(filepath);
-        decodedImage.writeImage();
+        predictor.predict_array(buffer, filepath);
+       // Log.e("dekodiranje", "Saving file to " + filepath);
+       // decodedImage.setFilePath(filepath);
+       // decodedImage.writeImage();
     }
 
     private List<File> getFiles(){

@@ -10,6 +10,8 @@ public class MEDPredictor implements Predictor{
     int prediction;
 
     @Override
+    public void predict_array(int[] buffer, String filepath){}
+    @Override
     public int predict(int tr, int tc, PGMImage image) {
         int Columns = image.getColumns();
         if(tc==0&&tr==0) {
@@ -40,6 +42,7 @@ public class MEDPredictor implements Predictor{
         return prediction;
 
     }
+
 
     private int med(int a, int b, int c) {
         int median;

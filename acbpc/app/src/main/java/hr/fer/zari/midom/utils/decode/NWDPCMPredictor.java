@@ -3,6 +3,8 @@ package hr.fer.zari.midom.utils.decode;
 public class NWDPCMPredictor implements Predictor {
 
     @Override
+    public void predict_array(int[] buffer, String filepath){}
+    @Override
     public int predict(int tr, int tc, PGMImage image) {
         int Columns = image.getColumns();
         if (tc == 0 && tr == 0) {

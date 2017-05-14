@@ -3,6 +3,8 @@ package hr.fer.zari.midom.utils.decode;
 public class GradNorthPredictor implements Predictor {
 
     @Override
+    public void predict_array(int[] buffer, String filepath){}
+    @Override
     public int predict(int tr, int tc, PGMImage image) {
         int prediction;
         int Columns = image.getColumns();

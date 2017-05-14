@@ -1,6 +1,10 @@
 package hr.fer.zari.midom.utils.decode;
 
+import android.util.Log;
+
 import java.util.Arrays;
+
+import static hr.fer.zari.midom.utils.Constants.ZIP_EXTRACT;
 
 public class CBPredictor implements Predictor {
 
@@ -73,7 +77,150 @@ public class CBPredictor implements Predictor {
 		this.predictorSetM[6] = new GradNorthPredictor();
 	}
 
+	public void predict_array(int[] buffer, String filepath){
+		PGMImage decodedImage = new PGMImage();
+		decodedImage.setDimension(buffer[0], buffer[1]);
+		decodedImage.setMaxGray(buffer[2]);
+		int prediction;
+		for (int k = 0; k < buffer[1]; k++) {
+			for (int j = 0; j < buffer[0]; j++) {
+				if(j==0&&k==0) {
+					prediction = 0;
+				}
+                else if(j==0) {
+                    //prediction = image.getPixel((tr - 1) * Columns + tc);
+                    prediction = buffer[(k - 1) * buffer[0] + 3];
+                }
+				else if(k==0) {
+					//prediction = image.getPixel(tr * Columns + tc - 1);
+					prediction = buffer[j - 1 + 3];
+				}
+				else if (j < xBorderM || (j > buffer[0] - xBorderM) || k < yBorderM) {
+					//prediction = new MEDPredictor().predict(k, j, decodedImage);
+
+						int north = buffer[(k - 1) * buffer[0] + j + 3];
+						int northWest = buffer[(k - 1) * buffer[0] + j - 1 + 3];
+						int west = buffer[k * buffer[0] + j - 1 + 3];
+						prediction = med(north, west, northWest);
+
+					if(prediction > 255){
+						prediction = 255;
+					}
+				}
+				else {
+					resetCell();
+					//searchTheWindow(k, j, decodedImage);
+
+					/* searchTheWindow */
+					int[] originVector = new int[vectorSizeM];
+					int[] currVector = new int[vectorSizeM];
+
+
+					for (int i = 0; i < vectorSizeM; i++) {
+						int x = j + offsetsSM[i][0];
+						int y = k + offsetsSM[i][1];
+						originVector[i] = buffer[y * buffer[0] + x + 3];
+					}
+
+					for(int y = -radiusM; y <= 0; y++){
+						for(int x = -radiusM; x < radiusM; x++){
+							if (x >= 0 && y == 0) {
+								break;
+							}
+
+							int pX = j + x;
+							int pY = k + y;
+							long dist = 0;
+							if (vectorDistM == VectorDistMeasure.L2){
+								for (int i = 0; i < vectorSizeM; i++) {
+									currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+											+ offsetsSM[i][0] + 3];
+									//dist += calcDistance(originVector[i],currVector[i]);
+									dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
+								}
+							}
+							else if (vectorDistM == VectorDistMeasure.L1) {
+								for (int i = 0; i < vectorSizeM; i++) {
+									currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+											+ offsetsSM[i][0] +3];
+									dist += Math.abs(originVector[i] - currVector[i]);
+								}
+							}
+							else if (vectorDistM == VectorDistMeasure.LINF) {
+								for (int i = 0; i < vectorSizeM; i++) {
+									currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+											+ offsetsSM[i][0] +3];
+									int distTmp = Math.abs(originVector[i] - currVector[i]);
+									if (distTmp > dist)
+										dist = distTmp;
+								}
+							}
+							else if (vectorDistM == VectorDistMeasure.WL2) {
+								for (int i = 0; i < vectorSizeM; i++) {
+									currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+											+ offsetsSM[i][0] +3];
+									if (i == 0 || i == 2) {
+										dist += 2 * ((originVector[i] - currVector[i]) * (originVector[i] - currVector[i]));
+									} else {
+										dist += (originVector[i] - currVector[i])
+												* (originVector[i] - currVector[i]);
+									}
+								}
+							}
+							//long dist = calcDistance(originVector, currVector);
+							CellPixelData pixel = new CellPixelData(x, y, dist);
+							updateCell(pixel);
+						}
+					}
+
+					computePenalties(k, j, decodedImage);
+
+					if (CB_SPC_CORRECTION) {
+						spcCorrectionM = 0;
+						for (CellPixelData cpd : cellM) {
+							int xOff = cpd.getxOff();
+							int yOff = cpd.getyOff();
+							int cellPred = blendPredictors(k + yOff, j + xOff, decodedImage);
+							int cellPixel = decodedImage.getPixel((k + yOff) * buffer[0] + j + xOff);
+							spcCorrectionM += cellPixel - cellPred;
+						}
+						spcCorrectionM /= cellSizeM;
+					}
+
+					prediction = blendPredictors(k, j, decodedImage) + spcCorrectionM;
+
+				}
+				if (prediction > 255) {
+					prediction = 255;
+				}
+				//renewedPixel = buffer[k * buffer[0] + j + 3] + prediction;
+				buffer[k * buffer[0] + j + 3] += prediction;
+				decodedImage.setPixel(k, j, buffer[k * buffer[0] + j + 3]);
+			}
+		}
+		Log.e("dekodiranje", "Saving file to " + filepath);
+		decodedImage.setFilePath(filepath);
+		decodedImage.writeImage();
+	}
+
+	private int med(int a, int b, int c) {
+		int median;
+		int max_ab = (a > b) ? a:b;
+		int min_ab = (a > b) ? b:a;
+		if (c >= max_ab)
+			median = min_ab;
+		else if (c <= min_ab)
+			median = max_ab;
+		else
+			median = a + b - c;
+
+		return median;
+	}
+
 	public int predict(int tr, int tc, PGMImage pgmP) {
+		return 0;
+	}
+/*	public int predict(int tr, int tc, PGMImage pgmP) {
 		int prediction = 0;
 		int Columns = pgmP.getColumns();
 		if (tc < xBorderM || (tc > Columns - xBorderM) || tr < yBorderM) {
@@ -101,6 +248,7 @@ public class CBPredictor implements Predictor {
 
 		return prediction > 255 ? 255 : prediction;
 	}
+	*/
 /*
 	public int predict(int tr, int tc, int prevError, PGMImage pgmP) {
 		int prediction = 0;
@@ -143,7 +291,7 @@ public class CBPredictor implements Predictor {
 		}
 	}
 
-	private void searchTheWindow(int tr, int tc, PGMImage pgmP) {
+	/*private void searchTheWindow(int tr, int tc, PGMImage pgmP) {
 		int Columns = pgmP.getColumns();
 		int[] originVector = new int[vectorSizeM];
 		int[] currVector = new int[vectorSizeM];
@@ -206,7 +354,7 @@ public class CBPredictor implements Predictor {
 			}
         }
 	}
-
+*/
 
 	/* NDK test calcDistance method */
 	public native long calcDistance(int originVector, int currVector);
