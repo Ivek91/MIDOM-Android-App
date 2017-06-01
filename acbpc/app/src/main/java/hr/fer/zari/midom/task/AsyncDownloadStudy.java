@@ -3,12 +3,9 @@ package hr.fer.zari.midom.task;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -32,16 +29,11 @@ import java.util.zip.ZipInputStream;
 import hr.fer.zari.midom.activities.SetDownloadType;
 //import hr.fer.zari.midom.dialogs.DialogLoading;
 import hr.fer.zari.midom.utils.Constants;
-import hr.fer.zari.midom.utils.ImageException;
 import hr.fer.zari.midom.utils.MidomUtils;
 import hr.fer.zari.midom.utils.decode.CBPredictor;
 import hr.fer.zari.midom.utils.decode.GRCoder;
-import hr.fer.zari.midom.utils.decode.PGMImage;
 import hr.fer.zari.midom.utils.decode.Predictor;
 
-import static com.google.android.gms.internal.a.F;
-import static com.google.android.gms.internal.a.I;
-import static com.google.android.gms.internal.a.T;
 import static hr.fer.zari.midom.utils.Constants.ZIP_EXTRACT;
 
 /**
@@ -67,6 +59,7 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
     private String downloadType;
     boolean isWiFi;
     boolean isMobile;
+    double elapsedSeconds = 0.0;
 
 //    private DialogDownloading dialogDownloading;
 
@@ -156,14 +149,17 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
                 List<File> files = getFiles();
                 for (File file:  files){
                     if (file.getName().toLowerCase().endsWith(".cbp")){
-                        Log.e(TAG, "DEKODIRANJE START" + file.getName());
+                        long tStart = System.currentTimeMillis();
                         decompressFile(file);
-                        Log.e(TAG, "DEKODIRANJE STOP" + file.getName());
+                        long tEnd = System.currentTimeMillis();
+                        long tDelta = tEnd - tStart;
+                        elapsedSeconds = tDelta / 1000.0;
+
 
                     }
+
                 }
             }
-
         } catch (Exception e) {
             Log.e(TAG, "Error with downloading file");
         } finally {
@@ -198,6 +194,10 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
      */
     @Override
     protected void onPostExecute(Void v) {
+        if(elapsedSeconds != 0.0) {
+            String totalTime = String.valueOf(elapsedSeconds);
+            Toast.makeText(activity, "Elapsed time: " + totalTime + " sec", Toast.LENGTH_LONG).show();
+        }
         super.onPostExecute(v);
         //dialogLoading.dismiss();
         MidomUtils.unLockOrientation(activity);
