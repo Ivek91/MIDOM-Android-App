@@ -36,6 +36,8 @@ import hr.fer.zari.midom.utils.decode.Predictor;
 
 import static hr.fer.zari.midom.utils.Constants.ZIP_EXTRACT;
 
+import com.imebra.*;
+
 /**
  * AsyncTask for downloading study.
  * Downloading file from given url in constructor,
@@ -47,6 +49,10 @@ import static hr.fer.zari.midom.utils.Constants.ZIP_EXTRACT;
  *
  */
 public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
+
+    static {
+        System.loadLibrary("imebra_lib");
+    }
 
     public static final String TAG = AsyncDownloadStudy.class.getSimpleName();
 

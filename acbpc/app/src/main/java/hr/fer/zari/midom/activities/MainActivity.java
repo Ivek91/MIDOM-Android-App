@@ -39,6 +39,10 @@ public class MainActivity extends ActionBarActivity implements MainFragment.OnFr
         System.loadLibrary("test-lib");
     }
 
+    static {
+        System.loadLibrary("imebra_lib");
+    }
+
     public final static String EXTRA_STUDY_ID = "hr.fer.zari.midom.STUDY_ID";
     public final static String EXTRA_CR_ID = "hr.fer.zari.midom.CR_ID";
     public final static String EXTRA_CR_OWNER = "hr.fer.zari.midom.CR_OWNER";

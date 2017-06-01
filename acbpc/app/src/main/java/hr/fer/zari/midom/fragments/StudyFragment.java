@@ -3,6 +3,7 @@ package hr.fer.zari.midom.fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,10 +41,17 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
+import com.imebra.*;
+
+
 /**
  * A placeholder fragment containing a simple view.
  */
 public class StudyFragment extends Fragment implements AsyncDownloadStudy.unzipCompleted {
+
+    static {
+        System.loadLibrary("imebra_lib");
+    }
 
     public static final String TAG = StudyFragment.class.getName();
     public static final String SELECTED_ITEM = "hr.fer.zari.midom.selected_item";
@@ -167,9 +176,18 @@ public class StudyFragment extends Fragment implements AsyncDownloadStudy.unzipC
         File files[] = f.listFiles();
         if (files != null) {
             for (File file : files) {
-                ImageBitmap imageBitmap = new ProxyImageBitmap(file.getAbsolutePath(), adapter);
-                imageBitmaps.add(imageBitmap);
-                Log.d("Files", "FileName:" + file.getName());
+                if (file.getName().toLowerCase().endsWith(".pgm")) {
+                    ImageBitmap imageBitmap = new ProxyImageBitmap(file.getAbsolutePath(), adapter);
+                    imageBitmaps.add(imageBitmap);
+                    Log.d("Files", "FileName:" + file.getName());
+                }
+                /* Added option to display DICOM images */
+                else if (file.getName().toLowerCase().endsWith(".dcm")) {
+
+                    ImageBitmap imageBitmap = new ProxyImageBitmap(file.getAbsolutePath(), adapter);
+                    imageBitmaps.add(imageBitmap);
+                    Log.d("Files_test", "FileName:" + file.getName());
+                }
             }
             adapter.notifyDataSetChanged();
         }
