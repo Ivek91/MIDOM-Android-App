@@ -131,12 +131,28 @@ public class CBPredictor implements Predictor {
 							int pX = j + x;
 							int pY = k + y;
 							long dist = 0;
+
 							if (vectorDistM == VectorDistMeasure.L2){
-								for (int i = 0; i < vectorSizeM; i++) {
-									currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
-											+ offsetsSM[i][0] + 3];
-									//dist += calcDistance(originVector[i],currVector[i]);
-									dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
+								if(x == -radiusM){
+									for (int i = 0; i < vectorSizeM; i++) {
+										currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+												+ offsetsSM[i][0] + 3];
+										//dist += calcDistance(originVector[i],currVector[i]);
+										dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
+									}
+								}
+								else{
+									currVector[4] = currVector[0];
+									currVector[5] = currVector[1];
+									currVector[1] = currVector[2];
+									currVector[2] = currVector[3];
+									currVector[0] = buffer[(pY + offsetsSM[0][1]) * buffer[0] + pX
+											+ offsetsSM[0][0] + 3];
+									currVector[3] = buffer[(pY + offsetsSM[3][1]) * buffer[0] + pX
+											+ offsetsSM[3][0] + 3];
+									for (int i = 0; i < vectorSizeM; i++) {
+										dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
+									}
 								}
 							}
 							else if (vectorDistM == VectorDistMeasure.L1) {
