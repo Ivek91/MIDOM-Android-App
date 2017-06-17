@@ -82,6 +82,8 @@ public class CBPredictor implements Predictor {
 		decodedImage.setDimension(buffer[0], buffer[1]);
 		decodedImage.setMaxGray(buffer[2]);
 		int prediction;
+		int[] originVector = new int[vectorSizeM];
+		int[] currVector = new int[vectorSizeM];
 		for (int k = 0; k < buffer[1]; k++) {
 			for (int j = 0; j < buffer[0]; j++) {
 				if(j==0&&k==0) {
@@ -112,14 +114,24 @@ public class CBPredictor implements Predictor {
 					//searchTheWindow(k, j, decodedImage);
 
 					/* searchTheWindow */
-					int[] originVector = new int[vectorSizeM];
-					int[] currVector = new int[vectorSizeM];
 
 
-					for (int i = 0; i < vectorSizeM; i++) {
-						int x = j + offsetsSM[i][0];
-						int y = k + offsetsSM[i][1];
-						originVector[i] = buffer[y * buffer[0] + x + 3];
+					if (j==xBorderM) {
+						for (int i = 0; i < vectorSizeM; i++) {
+							int x = j + offsetsSM[i][0];
+							int y = k + offsetsSM[i][1];
+							originVector[i] = buffer[y * buffer[0] + x + 3];
+						}
+					}
+					else{
+						originVector[4] = originVector[0];
+						originVector[5] = originVector[1];
+						originVector[1] = originVector[2];
+						originVector[2] = originVector[3];
+						originVector[0] = buffer[(k + offsetsSM[0][1]) * buffer[0] + j
+								+ offsetsSM[0][0] + 3];
+						originVector[3] = buffer[(k + offsetsSM[3][1]) * buffer[0] + j
+								+ offsetsSM[3][0] + 3];
 					}
 
 					for(int y = -radiusM; y <= 0; y++){
