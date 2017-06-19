@@ -60,9 +60,9 @@ public class PGMImage {
 	//	return (Rows);
 	//}
 
-	//public int getMaxGray() {
-	//	return (MaxGray);
-	//}
+	public int getMaxGray() {
+		return (MaxGray);
+	}
 
 	// 1. test za optimizaciju
 	//public int getPixel(int tr, int tc) {

@@ -401,8 +401,6 @@ public class CBPredictor implements Predictor {
 			for (long scanY = 0; scanY != buffer[0]; scanY++) {
 				for (long scanX = 0; scanX != buffer[1]; scanX++) {
 					dataHandler.setUnsignedLong((scanY * buffer[1] + scanX), buffer[(int) scanY * buffer[1] + (int) scanX + 3]);
-					//dataHandler.setUnsignedLong((scanY * buffer[1] + scanX) * 3 + 1, 0);
-					//dataHandler.setUnsignedLong((scanY * buffer[1] + scanX) * 3 + 2, 0);
 				}
 			}
 
@@ -428,8 +426,6 @@ public class CBPredictor implements Predictor {
 			for (long scanY = 0; scanY != buffer[0]; scanY++) {
 				for (long scanX = 0; scanX != buffer[1]; scanX++) {
 					dataHandler.setUnsignedLong((scanY * buffer[1] + scanX), buffer[(int) scanY * buffer[1] + (int) scanX + 3]);
-					//dataHandler.setUnsignedLong((scanY * buffer[1] + scanX) * 3 + 1, 0);
-					//dataHandler.setUnsignedLong((scanY * buffer[1] + scanX) * 3 + 2, 0);
 				}
 			}
 

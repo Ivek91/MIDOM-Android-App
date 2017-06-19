@@ -253,9 +253,9 @@ public class GRCoder {
         Log.e("DCM", "GRCODER AFTER LOADING IMAGE");
 
 
-		byte [] lookup = new byte[256];
+		byte [] lookup = new byte[fileMaxPixel+1];
 		for (int i=0; i< lookup.length; i++){
-			lookup[i] = calculateReverse((byte)(i-128));
+			lookup[i] = calculateReverse((byte)(i-((fileMaxPixel+1)/2)));
 		}
 
 		Log.e("TEST", "Krecemo");
@@ -280,7 +280,7 @@ public class GRCoder {
 //			if (nulti) {fileBytes[i] |= 1 << 7;}else{fileBytes[i] &= ~(1 << 7);}
 
 			try {
-				fileBytes[i] = lookup[fileBytes[i]+128];
+				fileBytes[i] = lookup[fileBytes[i]+((fileMaxPixel+1)/2)];
 			}catch (Exception e){
 				Log.e ("REVERSE", e.getMessage());
 			}

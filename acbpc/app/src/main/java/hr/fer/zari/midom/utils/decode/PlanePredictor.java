@@ -13,8 +13,8 @@ public class PlanePredictor implements Predictor{
         int west = image.getPixel(tr * Columns + tc - 1);
         int northWest = image.getPixel((tr - 1) * Columns + tc - 1);
 
-        if ((north + west - northWest) > 255) {
-            return 255;
+        if ((north + west - northWest) > image.getMaxGray()) {
+            return image.getMaxGray();
         } else if ((north + west - northWest) < 0) {
             return 0;
         }

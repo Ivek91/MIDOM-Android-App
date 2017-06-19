@@ -25,8 +25,8 @@ public class GradNorthPredictor implements Predictor {
             // resolve unwanted cases
             if (predTemp < 0) {
                 predTemp = 0;
-            } else if (predTemp > 255) {
-                predTemp = 255;
+            } else if (predTemp > image.getMaxGray()) {
+                predTemp = image.getMaxGray();
             }
 
             prediction = (int) (predTemp);

@@ -37,8 +37,8 @@ public class MEDPredictor implements Predictor{
             prediction = med(north, west, northWest);
         }
 
-        if(prediction > 255){
-            prediction = 255;
+        if(prediction > image.getMaxGray()){
+            prediction = image.getMaxGray();
         }
 
         return prediction;
