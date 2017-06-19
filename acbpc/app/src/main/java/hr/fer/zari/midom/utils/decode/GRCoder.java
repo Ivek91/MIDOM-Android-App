@@ -12,12 +12,21 @@ package hr.fer.zari.midom.utils.decode;
 import android.annotation.SuppressLint;
 import android.util.Log;
 
+import com.imebra.*;
+import com.imebra.LUT;
+import com.imebra.VOILUT;
+import com.imebra.drawBitmapType_t;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.List;
+
+import static com.imebra.drawBitmapType_t.drawBitmapRGBA;
 
 
 public class GRCoder {
@@ -207,6 +216,112 @@ public class GRCoder {
 			binary = 0;
 			binaryPart = false;
 		}
+		return output;
+	}
+
+	@SuppressLint("NewApi") public int[] decodeDCM (String FILENAME) {
+        Log.e("DCM", "GRCODER BEFORE LOADING IMAGE");
+        com.imebra.DataSet loadedDataSet = com.imebra.CodecFactory.load(FILENAME);
+		Log.e("DCM", "GRCODER AFTER CODEC FACTORY");
+		long width = loadedDataSet.getSignedLong(new com.imebra.TagId(0x28, 0x11), 0);
+		Log.e("DCM", "AFTER WIDTH");
+        fileWidth = (int) width;
+		long height = loadedDataSet.getSignedLong(new com.imebra.TagId(0x28, 0x10), 0);
+        fileHeight = (int) height;
+		long bitsAllocated = loadedDataSet.getSignedLong(new com.imebra.TagId(0x28, 0x100), 0);
+		if (bitsAllocated == 8) {
+			fileMaxPixel = 255;
+		}
+		if (bitsAllocated == 16) {
+			fileMaxPixel = 65535;
+		}
+		long size = loadedDataSet.getSignedLong(new com.imebra.TagId(0x7fe0, 0x00), 0);
+		Log.e("DCM", "SIZE "+String.valueOf(size));
+		long [] buffer = new long[(int)size-8];
+		fileBytes = new byte[(int)size-8];
+		for (int j=0;j<size-8;j++) {
+		    buffer[j] =  loadedDataSet.getUnsignedLong(new com.imebra.TagId(0x7fe0, 0x10), j);
+		    fileBytes[j] = (byte) buffer[j];
+		}
+		Log.e("DCM", "FILEBYTES END");
+
+        int[] output = new int [fileWidth*fileHeight + 3];
+        output[0] = fileWidth;
+        output[1] = fileHeight;
+        output[2] = fileMaxPixel;
+
+        Log.e("DCM", "GRCODER AFTER LOADING IMAGE");
+
+
+		byte [] lookup = new byte[256];
+		for (int i=0; i< lookup.length; i++){
+			lookup[i] = calculateReverse((byte)(i-128));
+		}
+
+		Log.e("TEST", "Krecemo");
+
+		for(int i=0; i < fileBytes.length; i++){
+//			if (((fileBytes[i] >> 7) & 1) == 1) {sedmi = true;}else {sedmi = false;}
+//			if (((fileBytes[i] >> 6) & 1) == 1){ sesti = true;}else {sesti = false;}
+//			if (((fileBytes[i] >> 5) & 1) == 1) {peti = true; }else{ peti = false;}
+//			if (((fileBytes[i] >> 4) & 1) == 1) {cetvrti = true;}else {cetvrti = false;}
+//			if (((fileBytes[i] >> 3) & 1) == 1) {treci = true; }else {treci = false;}
+//			if (((fileBytes[i] >> 2) & 1) == 1) {drugi = true;}else {drugi = false;}
+//			if (((fileBytes[i] >> 1) & 1) == 1) {prvi = true;}else {prvi = false;}
+//			if (((fileBytes[i] >> 0) & 1) == 1) {nulti = true; }else {nulti = false;}
+//
+//			if (sedmi) {fileBytes[i] |= 1;}else{fileBytes[i] &= ~(1 << 0);}
+//			if (sesti) {fileBytes[i] |= 1 << 1;}else{fileBytes[i] &= ~(1 << 1);}
+//			if (peti) {fileBytes[i] |= 1 << 2;}else{fileBytes[i] &= ~(1 << 2);}
+//			if (cetvrti){ fileBytes[i] |= 1 << 3;}else{fileBytes[i] &= ~(1 << 3);}
+//			if (treci) {fileBytes[i] |= 1 << 4;}else{fileBytes[i] &= ~(1 << 4);}
+//			if (drugi){ fileBytes[i] |= 1 << 5;}else{fileBytes[i] &= ~(1 << 5);}
+//			if (prvi) {fileBytes[i] |= 1 << 6;}else{fileBytes[i] &= ~(1 << 6);}
+//			if (nulti) {fileBytes[i] |= 1 << 7;}else{fileBytes[i] &= ~(1 << 7);}
+
+			try {
+				fileBytes[i] = lookup[fileBytes[i]+128];
+			}catch (Exception e){
+				Log.e ("REVERSE", e.getMessage());
+			}
+		}
+
+		Log.e("TEST", "GOTOVI");
+
+		BitSet inSet = BitSet.valueOf (fileBytes);
+		int unary =0;
+		int binary = 0;
+		symbolCnt = 0;
+		errorSum = 0;
+		k = 0;
+
+		boolean binaryPart = false;
+		int i= 0;
+		for (int count= 0; count < fileWidth*fileHeight; count++){
+			if (inSet.get(i) && !binaryPart){
+				i++;
+				count--;
+				unary++;
+				continue;
+			}
+			k = getOptimalParamK();
+			m = (int) Math.pow(2, k);
+			binaryPart = true;
+			i++; //skip delimiter
+			for (int j=0; j<k; j++){
+				if (inSet.get(i+j))
+					binary += (int) Math.pow (2,k-1-j);
+			}
+			i += k;
+			int value = unary*m + binary;
+			value = demap (value);
+			output[3+count] = value;
+			update(Math.abs(value));
+			unary = 0;
+			binary = 0;
+			binaryPart = false;
+		}
+
 		return output;
 	}
 

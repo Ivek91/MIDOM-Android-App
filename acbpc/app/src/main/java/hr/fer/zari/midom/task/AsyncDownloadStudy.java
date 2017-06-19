@@ -136,6 +136,7 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
             byte data[] = new byte[1024];
             //long total = 0;
             int count;
+            String ENC = "ENC";
 
             while ((count = input.read(data)) != -1) {
                 //total += count;
@@ -163,7 +164,14 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
 
 
                     }
-
+                    if (file.getName().toLowerCase().endsWith(".dcm") && file.getName().toLowerCase().contains(ENC.toLowerCase())){
+                        Log.e("DCM", "POCETAK DCM");
+                        long tStart = System.currentTimeMillis();
+                        decompressDcmFile(file);
+                        long tEnd = System.currentTimeMillis();
+                        long tDelta = tEnd - tStart;
+                        elapsedSeconds = tDelta / 1000.0;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -294,29 +302,23 @@ public class AsyncDownloadStudy extends AsyncTask<Void, Void, Void> {
     public void decompressFile (File file){
         //File needs to be .cbp
         GRCoder dekoder = new GRCoder();
-
         int[] buffer = dekoder.decode(file.getAbsolutePath());
-
-        // PGMImage decodedImage = new PGMImage();
-        // decodedImage.setDimension(buffer[0], buffer[1]);
-        // decodedImage.setMaxGray(buffer[2]);
-
         Predictor predictor = new CBPredictor(CBPredictor.VectorDistMeasure.L2, CBPredictor.BlendPenaltyType.SSQR, 5, 6, 6, 0, false);
-
-       // int renewedPixel;
-        //for (int k = 0; k < buffer[1]; k++) {
-        //    for (int j = 0; j < buffer[0]; j++) {
-        //        int prediction = predictor.predict(k, j, decodedImage);
-        //        renewedPixel = buffer[k * buffer[0] + j + 3] + prediction;
-        //        decodedImage.setPixel(k, j, renewedPixel);
-        //    }
-            //if (k % 25 == 0) Log.e("dekodiranje", String.valueOf(k));
-        //}
         String filepath = ZIP_EXTRACT +"/images/" + file.getName().substring(0, file.getName().indexOf(".")) + ".pgm";
         predictor.predict_array(buffer, filepath);
-       // Log.e("dekodiranje", "Saving file to " + filepath);
-       // decodedImage.setFilePath(filepath);
-       // decodedImage.writeImage();
+
+    }
+    public void decompressDcmFile (File file){
+        //File needs to be .dcm
+        GRCoder dekoder = new GRCoder();
+        Log.e("DCM", "GRCODER ENTRY");
+        Log.e("DCM", file.getAbsolutePath());
+        int[] buffer = dekoder.decodeDCM(file.getAbsolutePath());
+        Log.e("DCM", "GRCODER EXIT");
+        Predictor predictor = new CBPredictor(CBPredictor.VectorDistMeasure.L2, CBPredictor.BlendPenaltyType.SSQR, 5, 6, 6, 0, false);
+        String orig_filepath = file.getAbsolutePath();
+        String filepath = ZIP_EXTRACT +"/images/" + file.getName().substring(0, file.getName().indexOf(".")) + "DEC"+".dcm";
+        predictor.predict_arrayDCM(buffer, orig_filepath, filepath);
     }
 
     private List<File> getFiles(){

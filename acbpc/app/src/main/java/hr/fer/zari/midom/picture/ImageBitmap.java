@@ -19,6 +19,8 @@ public class ImageBitmap {
     private Bitmap bitmap;
     private Bitmap thumbBitmap;
     private String location;
+    private String ENC = "ENC";
+    private String DEC = "DEC";
 
     public ImageBitmap(String location) {
         this.location = location;
@@ -62,7 +64,7 @@ public class ImageBitmap {
                 thumbBitmap = null;
             }
         }
-        else if(location.endsWith(".dcm")) {
+        else if(location.endsWith(".dcm") && !(location.toLowerCase().contains(ENC.toLowerCase())) || (location.endsWith(".dcm") && location.toLowerCase().contains(DEC.toLowerCase()))) {
 
             Log.d("START", "test");
             com.imebra.DataSet loadedDataSet = com.imebra.CodecFactory.load(location);
@@ -72,7 +74,6 @@ public class ImageBitmap {
             long height = image.getHeight();
             int height_int = (int) height;
             if (height_int > 0 && width_int > 0) {
-                com.imebra.ReadingDataHandlerNumeric dataHandler = image.getReadingDataHandler();
                 // The transforms chain will contain all the transform that we want to
                 // apply to the image before displaying it
                 com.imebra.TransformsChain chain = new com.imebra.TransformsChain();
@@ -172,7 +173,7 @@ public class ImageBitmap {
             bitmap = null;
         }
         }
-        else if(location.endsWith(".dcm")) {
+        else if(location.endsWith(".dcm") && !(location.toLowerCase().contains(ENC.toLowerCase())) || (location.endsWith(".dcm") && location.toLowerCase().contains(DEC.toLowerCase()))) {
             com.imebra.DataSet loadedDataSet = com.imebra.CodecFactory.load(location);
             com.imebra.Image image = loadedDataSet.getImageApplyModalityTransform(0);
             long width = image.getWidth();

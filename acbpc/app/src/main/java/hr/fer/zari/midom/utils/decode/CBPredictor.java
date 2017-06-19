@@ -2,8 +2,13 @@ package hr.fer.zari.midom.utils.decode;
 
 import android.util.Log;
 
+import java.io.File;
 import java.util.Arrays;
+import com.imebra.*;
 
+import static com.imebra.bitDepth_t.depthU16;
+import static com.imebra.bitDepth_t.depthU8;
+import static com.imebra.imageQuality_t.veryHigh;
 import static hr.fer.zari.midom.utils.Constants.ZIP_EXTRACT;
 
 public class CBPredictor implements Predictor {
@@ -229,6 +234,216 @@ public class CBPredictor implements Predictor {
 		Log.e("dekodiranje", "Saving file to " + filepath);
 		decodedImage.setFilePath(filepath);
 		decodedImage.writeImage();
+	}
+
+	public void predict_arrayDCM(int[] buffer, String filepath, String path){
+		PGMImage decodedImage = new PGMImage();
+		decodedImage.setDimension(buffer[0], buffer[1]);
+		decodedImage.setMaxGray(buffer[2]);
+		int prediction;
+		int[] originVector = new int[vectorSizeM];
+		int[] currVector = new int[vectorSizeM];
+		for (int k = 0; k < buffer[1]; k++) {
+			for (int j = 0; j < buffer[0]; j++) {
+				if(j==0&&k==0) {
+					prediction = 0;
+				}
+				else if(j==0) {
+					//prediction = image.getPixel((tr - 1) * Columns + tc);
+					prediction = buffer[(k - 1) * buffer[0] + 3];
+				}
+				else if(k==0) {
+					//prediction = image.getPixel(tr * Columns + tc - 1);
+					prediction = buffer[j - 1 + 3];
+				}
+				else if (j < xBorderM || (j > buffer[0] - xBorderM) || k < yBorderM) {
+					//prediction = new MEDPredictor().predict(k, j, decodedImage);
+
+					int north = buffer[(k - 1) * buffer[0] + j + 3];
+					int northWest = buffer[(k - 1) * buffer[0] + j - 1 + 3];
+					int west = buffer[k * buffer[0] + j - 1 + 3];
+					prediction = med(north, west, northWest);
+
+					if(prediction > buffer[2]){
+						prediction = buffer[2];
+					}
+				}
+				else {
+					resetCell();
+					//searchTheWindow(k, j, decodedImage);
+
+					/* searchTheWindow */
+
+
+					if (j==xBorderM) {
+						for (int i = 0; i < vectorSizeM; i++) {
+							int x = j + offsetsSM[i][0];
+							int y = k + offsetsSM[i][1];
+							originVector[i] = buffer[y * buffer[0] + x + 3];
+						}
+					}
+					else{
+						originVector[4] = originVector[0];
+						originVector[5] = originVector[1];
+						originVector[1] = originVector[2];
+						originVector[2] = originVector[3];
+						originVector[0] = buffer[(k + offsetsSM[0][1]) * buffer[0] + j
+								+ offsetsSM[0][0] + 3];
+						originVector[3] = buffer[(k + offsetsSM[3][1]) * buffer[0] + j
+								+ offsetsSM[3][0] + 3];
+					}
+
+					for(int y = -radiusM; y <= 0; y++){
+						for(int x = -radiusM; x < radiusM; x++){
+							if (x >= 0 && y == 0) {
+								break;
+							}
+
+							int pX = j + x;
+							int pY = k + y;
+							long dist = 0;
+
+							if (vectorDistM == VectorDistMeasure.L2){
+								if(x == -radiusM){
+									for (int i = 0; i < vectorSizeM; i++) {
+										currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+												+ offsetsSM[i][0] + 3];
+										//dist += calcDistance(originVector[i],currVector[i]);
+										dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
+									}
+								}
+								else{
+									currVector[4] = currVector[0];
+									currVector[5] = currVector[1];
+									currVector[1] = currVector[2];
+									currVector[2] = currVector[3];
+									currVector[0] = buffer[(pY + offsetsSM[0][1]) * buffer[0] + pX
+											+ offsetsSM[0][0] + 3];
+									currVector[3] = buffer[(pY + offsetsSM[3][1]) * buffer[0] + pX
+											+ offsetsSM[3][0] + 3];
+									for (int i = 0; i < vectorSizeM; i++) {
+										dist += (originVector[i] - currVector[i]) * (originVector[i] - currVector[i]);
+									}
+								}
+							}
+							else if (vectorDistM == VectorDistMeasure.L1) {
+								for (int i = 0; i < vectorSizeM; i++) {
+									currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+											+ offsetsSM[i][0] +3];
+									dist += Math.abs(originVector[i] - currVector[i]);
+								}
+							}
+							else if (vectorDistM == VectorDistMeasure.LINF) {
+								for (int i = 0; i < vectorSizeM; i++) {
+									currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+											+ offsetsSM[i][0] +3];
+									int distTmp = Math.abs(originVector[i] - currVector[i]);
+									if (distTmp > dist)
+										dist = distTmp;
+								}
+							}
+							else if (vectorDistM == VectorDistMeasure.WL2) {
+								for (int i = 0; i < vectorSizeM; i++) {
+									currVector[i] = buffer[(pY + offsetsSM[i][1]) * buffer[0] + pX
+											+ offsetsSM[i][0] +3];
+									if (i == 0 || i == 2) {
+										dist += 2 * ((originVector[i] - currVector[i]) * (originVector[i] - currVector[i]));
+									} else {
+										dist += (originVector[i] - currVector[i])
+												* (originVector[i] - currVector[i]);
+									}
+								}
+							}
+							//long dist = calcDistance(originVector, currVector);
+							CellPixelData pixel = new CellPixelData(x, y, dist);
+							updateCell(pixel);
+						}
+					}
+
+					computePenalties(k, j, decodedImage);
+
+					if (CB_SPC_CORRECTION) {
+						spcCorrectionM = 0;
+						for (CellPixelData cpd : cellM) {
+							int xOff = cpd.getxOff();
+							int yOff = cpd.getyOff();
+							int cellPred = blendPredictors(k + yOff, j + xOff, decodedImage);
+							int cellPixel = decodedImage.getPixel((k + yOff) * buffer[0] + j + xOff);
+							spcCorrectionM += cellPixel - cellPred;
+						}
+						spcCorrectionM /= cellSizeM;
+					}
+
+					prediction = blendPredictors(k, j, decodedImage) + spcCorrectionM;
+
+				}
+				if (prediction > buffer[2]) {
+					prediction = buffer[2];
+				}
+				//renewedPixel = buffer[k * buffer[0] + j + 3] + prediction;
+				buffer[k * buffer[0] + j + 3] += prediction;
+				decodedImage.setPixel(k, j, buffer[k * buffer[0] + j + 3]);
+			}
+		}
+		Log.e("DCM", "GOTOVO DEKODIRANJE");
+		// We specify the transfer syntax and the charset
+		//com.imebra.DataSet dataSet = new com.imebra.DataSet("1.2.840.10008.1.2.1");
+		com.imebra.DataSet loadedDataSet = com.imebra.CodecFactory.load(filepath);
+		long bitsAllocated = loadedDataSet.getSignedLong(new com.imebra.TagId(0x28, 0x100), 0);
+		if (bitsAllocated == 8) {
+			bitDepth_t depth = depthU8;
+			Image image = new Image(buffer[0], buffer[1], depth, "MONOCHROME2", 8);
+			Log.e("DCM", "KREIRANA SLIKA");
+
+			WritingDataHandlerNumeric dataHandler = image.getWritingDataHandler();
+			Log.e("DCM", "DATA HANDLER");
+			// Set all the pixels to red
+			for (long scanY = 0; scanY != buffer[0]; scanY++) {
+				for (long scanX = 0; scanX != buffer[1]; scanX++) {
+					dataHandler.setUnsignedLong((scanY * buffer[1] + scanX), buffer[(int) scanY * buffer[1] + (int) scanX + 3]);
+					//dataHandler.setUnsignedLong((scanY * buffer[1] + scanX) * 3 + 1, 0);
+					//dataHandler.setUnsignedLong((scanY * buffer[1] + scanX) * 3 + 2, 0);
+				}
+			}
+
+			dataHandler.delete();
+
+
+			Log.e("DCM", "UCITANI PIXELI U SLIKU");
+			loadedDataSet.setImage(0, image, veryHigh);
+			//loadedDataSet.setImage(0, image,veryHigh);
+			Log.e("DCM", "ROWS " + String.valueOf(buffer[0]));
+			Log.e("DCM", "COLUMNS " + String.valueOf(buffer[1]));
+			//com.imebra.CodecFactory.save(dataSet, path, com.imebra.codecType_t.dicom);
+			com.imebra.CodecFactory.save(loadedDataSet, path, com.imebra.codecType_t.dicom);
+		}
+		if (bitsAllocated == 16) {
+			bitDepth_t depth = depthU16;
+			Image image = new Image(buffer[0], buffer[1], depth, "MONOCHROME2", 16);
+			Log.e("DCM", "KREIRANA SLIKA");
+
+			WritingDataHandlerNumeric dataHandler = image.getWritingDataHandler();
+			Log.e("DCM", "DATA HANDLER");
+			// Set all the pixels to red
+			for (long scanY = 0; scanY != buffer[0]; scanY++) {
+				for (long scanX = 0; scanX != buffer[1]; scanX++) {
+					dataHandler.setUnsignedLong((scanY * buffer[1] + scanX), buffer[(int) scanY * buffer[1] + (int) scanX + 3]);
+					//dataHandler.setUnsignedLong((scanY * buffer[1] + scanX) * 3 + 1, 0);
+					//dataHandler.setUnsignedLong((scanY * buffer[1] + scanX) * 3 + 2, 0);
+				}
+			}
+
+			dataHandler.delete();
+
+
+			Log.e("DCM", "UCITANI PIXELI U SLIKU");
+			loadedDataSet.setImage(0, image, veryHigh);
+			//loadedDataSet.setImage(0, image,veryHigh);
+			Log.e("DCM", "ROWS " + String.valueOf(buffer[0]));
+			Log.e("DCM", "COLUMNS " + String.valueOf(buffer[1]));
+			//com.imebra.CodecFactory.save(dataSet, path, com.imebra.codecType_t.dicom);
+			com.imebra.CodecFactory.save(loadedDataSet, path, com.imebra.codecType_t.dicom);
+		}
 	}
 
 	private int med(int a, int b, int c) {
